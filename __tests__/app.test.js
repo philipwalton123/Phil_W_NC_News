@@ -82,4 +82,32 @@ describe.only('PATCH /api/articles/:article_id', () => {
               })
         })
     });
+    it('404: should respond with a msg if article does not exist', () => {
+        return supertest(app).patch('/api/articles/13').send({inc_votes: 3})
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe("no such article with id 13")
+        })
+    });
+    it('400: should respond with a msg if given wrong type of argument', () => {
+        return supertest(app).patch('/api/articles/bananas').send({inc_votes: 3})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("not a valid request")
+        })
+    });
+    it('400: should respond with a msg if no body is sent in the request', () => {
+        return supertest(app).patch('/api/articles/2').send()
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be provided")
+        })
+    });
+    it('400: should respond with a msg if body does not have inc_count property', () => {
+        return supertest(app).patch('/api/articles/2').send({id: 8})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be provided")
+        })
+    });
 });

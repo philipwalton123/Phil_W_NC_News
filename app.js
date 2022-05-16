@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
     }
 })
 
-app.use(err => {
+app.use((err, req, res, next) => {
     console.log("err in last error catcher", Object.keys(err))
     res.status(500).send({msg: 'internal server error'})
 })
