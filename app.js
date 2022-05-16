@@ -23,7 +23,11 @@ app.use((err, req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    res.status(err.status).send({msg: err.msg})
+    if(err.hasOwnProperty('status') && err.hasOwnProperty('msg')) {
+        res.status(err.status).send({msg: err.msg})
+    } else {
+        res.status(500).send({msg: 'internal server error'})
+    }
 })
 
 module.exports = app
