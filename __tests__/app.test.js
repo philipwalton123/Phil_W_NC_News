@@ -65,7 +65,7 @@ describe('GET /api/articles/:article_id', () => {
     });
 });
 
-describe.only('PATCH /api/articles/:article_id', () => {
+describe('PATCH /api/articles/:article_id', () => {
     it('200: should increment votes and respond with the updated article', () => {
         const votesBeforePatch = testData.articleData[1].votes
         return supertest(app).patch('/api/articles/2').send({inc_votes: 3})
@@ -108,6 +108,13 @@ describe.only('PATCH /api/articles/:article_id', () => {
         .expect(400)
         .then(response => {
             expect(response.body.msg).toBe("inc_votes must be provided")
+        })
+    });
+    it('400: should respond with a msg if inc_count is not a number', () => {
+        return supertest(app).patch('/api/articles/2').send({inc_votes: true})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be an integer")
         })
     });
 });

@@ -29,6 +29,11 @@ exports.updateArticleVotes = (req, res, next) => {
         .catch(err => {
             next(err)
         })
+    } else if (typeof req.body.inc_votes != 'number') {
+        return Promise.reject({status: 400, msg: "inc_votes must be an integer"})
+        .catch(err => {
+            next(err)
+        })
     } else {
         incrementArticleVotes(req.params.article_id, req.body.inc_votes)
         .then(article => {
