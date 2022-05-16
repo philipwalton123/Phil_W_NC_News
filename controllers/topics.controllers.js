@@ -1,4 +1,4 @@
-const { readAllTopics, getThisArticle } = require("../models/topics.models")
+const { readAllTopics, getThisArticle, incrementArticleVotes } = require("../models/topics.models")
 
 exports.getTopics = (req, res, next) => {
     readAllTopics()
@@ -20,4 +20,14 @@ exports.getArticle = (req, res, next) => {
         next(err, req.params.article_id)
     })
 
+}
+
+exports.updateArticleVotes = (req, res, next) => {
+    incrementArticleVotes(req.params.article_id, req.body.inc_votes)
+    .then(article => {
+        res.status(200).send({article})
+    })
+    .catch(err => {
+        next(err)
+    })
 }

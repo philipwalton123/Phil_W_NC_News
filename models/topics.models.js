@@ -17,3 +17,10 @@ exports.getThisArticle = (id) => {
         }
     })
 }
+
+exports.incrementArticleVotes = (id, increment) => {
+    return db.query('UPDATE articles set votes = votes + $1 WHERE article_id = $2 RETURNING *', [increment, id])
+    .then(result => {
+        return result.rows[0]
+    })
+}
