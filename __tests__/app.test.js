@@ -32,3 +32,35 @@ describe('GET /api/topics', () => {
         })
     });
 });
+
+describe('GET /api/articles/:article_id', () => {
+    it('should respond with the correct article object with the correct properties', () => {
+        return supertest(app).get('/api/articles/3')
+        .expect(200)
+        .then(response => {
+            expect(response.body.article).toMatchObject({
+                title: "Eight pug gifs that remind me of mitch",
+                topic: "mitch",
+                author: "icellusedkars",
+                body: "some gifs",
+                created_at: expect.any(String),
+                votes: 0,
+                article_id: expect.any(Number)
+            })
+        })
+    });
+    it('404: should respond with a msg if article does not exist', () => {
+        return supertest(app).get('/api/articles/13')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe("no such article with id 13")
+        })
+    });
+    it('400: should respond with a msg if given wrong type of argument', () => {
+        return supertest(app).get('/api/articles/bananas')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("not a valid request")
+        })
+    });
+});
