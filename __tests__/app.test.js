@@ -64,6 +64,14 @@ describe('GET /api/articles/:article_id', () => {
             expect(response.body.msg).toBe("not a valid request")
         })
     });
+    it('200: response should include the total comment count for the requested article', () => {
+        return supertest(app).get('/api/articles/3')
+        .expect(200)
+        .then(response => {
+            expect(response.body.article).toHaveProperty('comment_count')
+            expect(response.body.article.comment_count).toBe(2)
+        })
+    });
 });
 
 describe('GET /api/users', () => {
