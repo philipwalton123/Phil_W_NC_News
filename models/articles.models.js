@@ -1,4 +1,6 @@
 const db = require('../db/connection')
+const format = require('pg-format')
+const { convertTimestampToDate } = require('../db/helpers/utils')
 
 exports.getThisArticle = (id) => {
     return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST(COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.article_id = $1 GROUP BY articles.article_id', [id])
@@ -37,4 +39,25 @@ exports.readAllArticles = () => {
     .then(result => {
         return result.rows
     })
+}
+
+
+exports.addThisComment = (id, body) => {
+
+    if(Object.keys(body).length === 0 || !body.hasOwnProperty('body') || !body.hasOwnProperty('username')) {
+        return Promise.reject({status: 400, msg: "malformed post"})
+        
+    } else if (typeof body.body != 'string' || typeof body.username != 'string') {
+        return Promise.reject({status: 400, msg: "invalid value types"})
+        
+    } else {
+        const date = new Date(Date.now())
+        const queryStr = format('INSERT INTO comments (body, votes, author, article_id, created_at) VALUES %L RETURNING *', [[body.body, 0, body.username, id, date]])
+        console.log(queryStr)
+        return db.query(queryStr)
+        .then(result => {
+            console.log(result.rows, '<<<<<result')
+            return result.rows[0]
+        })
+    }
 }

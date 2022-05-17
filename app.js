@@ -2,7 +2,7 @@ const express = require('express')
 
 const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
-const { updateArticleVotes, getArticle, getArticles } = require('./controllers/articles.controllers')
+const { updateArticleVotes, getArticle, getArticles, postComment } = require('./controllers/articles.controllers')
 
 
 const app = express()
@@ -25,6 +25,11 @@ app.patch('/api/articles/:article_id', updateArticleVotes)
 app.get('/api/articles', getArticles)
 
 
+
+//POST a comment to a specified article
+app.post('/api/articles/:article_id/comments', postComment)
+
+
 app.use('/*', (req, res, next) => {
     res.status(404).send({msg: "not found"})
     next()
@@ -34,6 +39,9 @@ app.use((err, req, res, next) => {
     if (err.code === '22P02') {
         //console.log("caught as a psql error")
         res.status(400).send({msg: `not a valid request`})
+    } else if(err.code === '23503') {
+        console.log(req)
+        res.status(404).send({msg: `not found: invalid article id`})
     } else {
         next(err)
     }

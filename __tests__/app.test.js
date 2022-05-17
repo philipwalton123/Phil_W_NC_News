@@ -167,3 +167,31 @@ describe('GET /api/articles', () => {
         })
     });
 });
+
+
+describe.only('POST /api/articles/:article_id/comments', () => {
+    it('should return the new comment', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        const commentsBeforePost = testData.commentData.length
+        return supertest(app).post('/api/articles/3/comments').send(testComment)
+        .expect(201)
+        .then(response => {
+            expect(response.body.comment).toEqual({
+                article_id: 3,
+                author: 'rogersop',
+                body: 'I like the way you think.',
+                comment_id: commentsBeforePost + 1,
+                created_at: expect.any(String),
+                votes: 0
+            })
+        })
+    });
+    it('404: should respond with a msg if article id does not exist', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        return supertest(app).post('/api/articles/13/comments').send(testComment)
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe(`not found: invalid article id`)
+        })
+    });
+});
