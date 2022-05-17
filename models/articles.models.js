@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const { valueExists } = require('./modelUtils')
 
 exports.getThisArticle = (id) => {
     return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST(COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.article_id = $1 GROUP BY articles.article_id', [id])
@@ -31,3 +32,13 @@ exports.incrementArticleVotes = (id, body) => {
         })
     }
 }
+
+exports.getTheseComments = (id) => {
+    return db.query('SELECT * FROM comments WHERE article_id = $1', [id])
+    .then(result => {
+     
+        const thisArticleExists = await valueExists('articles', 'article_id', id)
+
+        return thisArticleExists ? result.rows : Promise.reject({status: 404, msg: `no such article with id ${id}`})
+    })
+} 
