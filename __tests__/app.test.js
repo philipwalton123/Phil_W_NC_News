@@ -80,7 +80,9 @@ describe('GET /api/users', () => {
                     avatar_url: expect.any(String)
                 })
             })
-    });
+        })
+    })
+})
           
 describe('PATCH /api/articles/:article_id', () => {
     it('200: should increment votes and respond with the updated article', () => {
