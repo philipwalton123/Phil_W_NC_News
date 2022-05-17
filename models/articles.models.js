@@ -48,7 +48,7 @@ exports.addThisComment = (id, body) => {
         return Promise.reject({status: 400, msg: "malformed post"})
         
     } else if (typeof body.body != 'string' || typeof body.username != 'string') {
-        return Promise.reject({status: 400, msg: "invalid value types"})
+        return Promise.reject({status: 400, msg: "invalid value type"})
         
     } else {
         const date = new Date(Date.now())

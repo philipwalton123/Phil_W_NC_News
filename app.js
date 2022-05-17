@@ -40,8 +40,11 @@ app.use((err, req, res, next) => {
         //console.log("caught as a psql error")
         res.status(400).send({msg: `not a valid request`})
     } else if(err.code === '23503') {
-        console.log(req)
-        res.status(404).send({msg: `not found: invalid article id`})
+        if (/not present in table "users"/.test(err.detail)){
+            res.status(404).send({msg: `not found: invalid user`})
+        } else {
+            res.status(404).send({msg: `not found: invalid article id`})
+        }
     } else {
         next(err)
     }
