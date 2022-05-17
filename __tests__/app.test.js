@@ -146,3 +146,24 @@ describe('PATCH /api/articles/:article_id', () => {
         })
     });
 });
+
+describe('GET /api/articles', () => {
+    it('200: should return all articles including comment count', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            response.body.articles.forEach(article => {
+                expect(article).toMatchObject({
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_id: expect.any(Number),
+                    comment_count: expect.any(Number)
+                })
+            })
+        })
+    });
+});
