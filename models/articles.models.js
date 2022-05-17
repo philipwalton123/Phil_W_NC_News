@@ -34,11 +34,18 @@ exports.incrementArticleVotes = (id, body) => {
 }
 
 exports.getTheseComments = (id) => {
-    return db.query('SELECT * FROM comments WHERE article_id = $1', [id])
-    .then(result => {
-     
-        const thisArticleExists = await valueExists('articles', 'article_id', id)
+    const comments = db.query('SELECT * FROM comments WHERE article_id = $1', [id])
+    
+    const thisArticleExists = valueExists('articles', 'article_id', id)
 
-        return thisArticleExists ? result.rows : Promise.reject({status: 404, msg: `no such article with id ${id}`})
+    return Promise.all([comments, thisArticleExists])
+    .then(([comments, thisArticleExists]) => {
+        console.log(comments.rows)
+        console.log(thisArticleExists, '<<<<<<<<')
+        if (thisArticleExists) {
+            return comments.rows
+        } else {
+            return Promise.reject({status: 404, msg: `no such article with id ${id}`})
+        }
     })
 } 
