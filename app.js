@@ -1,9 +1,8 @@
 const express = require('express')
 
-const { getTopics, getArticle } = require('./controllers/topics.controllers')
 const { getUsers } = require('./controllers/users.controllers')
-
-const { getTopics, getArticle, updateArticleVotes } = require('./controllers/topics.controllers')
+const { getTopics } = require('./controllers/topics.controllers')
+const { updateArticleVotes, getArticle } = require('./controllers/articles.controllers')
 
 
 const app = express()
