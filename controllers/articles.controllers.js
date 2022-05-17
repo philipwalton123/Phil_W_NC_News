@@ -1,4 +1,4 @@
-const { getThisArticle, incrementArticleVotes } = require("../models/topics.models")
+const { getThisArticle, incrementArticleVotes } = require("../models/articles.models")
 
 exports.getArticle = (req, res, next) => {
     getThisArticle(req.params.article_id)
@@ -12,7 +12,6 @@ exports.getArticle = (req, res, next) => {
 }
 
 exports.updateArticleVotes = (req, res, next) => {
-    console.log(req.body, "<<<< in controller")
     if(Object.keys(req.body).length === 0 || !req.body.hasOwnProperty('inc_votes')) {
         return Promise.reject({status: 400, msg: "inc_votes must be provided"})
         .catch(err => {
@@ -29,7 +28,6 @@ exports.updateArticleVotes = (req, res, next) => {
             res.status(200).send({article})
         })
         .catch(err => {
-            console.log("catch block")
             next(err)
         })
     }
