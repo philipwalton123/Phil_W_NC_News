@@ -3,6 +3,7 @@ const { getThisArticle, incrementArticleVotes } = require("../models/articles.mo
 exports.getArticle = (req, res, next) => {
     getThisArticle(req.params.article_id)
     .then(article => {
+        console.log(article, '<<<<< controller')
         res.status(200).send({article})
     })
     .catch(err => {

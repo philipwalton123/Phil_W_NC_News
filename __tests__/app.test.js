@@ -39,6 +39,7 @@ describe('GET /api/articles/:article_id', () => {
         return supertest(app).get('/api/articles/3')
         .expect(200)
         .then(response => {
+            console.log(response.body, '<<<<in test')
             expect(response.body.article).toMatchObject({
                 title: "Eight pug gifs that remind me of mitch",
                 topic: "mitch",
