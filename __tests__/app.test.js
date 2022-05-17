@@ -39,6 +39,7 @@ describe('GET /api/articles/:article_id', () => {
         return supertest(app).get('/api/articles/3')
         .expect(200)
         .then(response => {
+            console.log(response.body, '<<<<in test')
             expect(response.body.article).toMatchObject({
                 title: "Eight pug gifs that remind me of mitch",
                 topic: "mitch",
@@ -64,6 +65,14 @@ describe('GET /api/articles/:article_id', () => {
             expect(response.body.msg).toBe("not a valid request")
         })
     });
+    it('200: response should include the total comment count for the requested article', () => {
+        return supertest(app).get('/api/articles/3')
+        .expect(200)
+        .then(response => {
+            expect(response.body.article).toHaveProperty('comment_count')
+            expect(response.body.article.comment_count).toBe(2)
+        })
+    });
 });
 
 describe('GET /api/users', () => {
@@ -80,7 +89,9 @@ describe('GET /api/users', () => {
                     avatar_url: expect.any(String)
                 })
             })
-    });
+        })
+    })
+})
           
 describe('PATCH /api/articles/:article_id', () => {
     it('200: should increment votes and respond with the updated article', () => {

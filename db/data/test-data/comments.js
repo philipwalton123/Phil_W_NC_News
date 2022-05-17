@@ -63,7 +63,7 @@ module.exports = [
     created_at: 1577848080000,
   },
   {
-    body: "git push origin master",
+    body: "some gifs",
     votes: 0,
     author: "icellusedkars",
     article_id: 3,
