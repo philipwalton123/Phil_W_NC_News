@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const seed = require('../db/seeds/seed')
 const db = require('../db/connection')
 const testData = require('../db/data/test-data/index')
+const { forEach } = require('../db/data/test-data/articles')
 
 beforeEach(() => {
 return seed(testData)
@@ -65,6 +66,22 @@ describe('GET /api/articles/:article_id', () => {
     });
 });
 
+describe('GET /api/users', () => {
+    it('200: returns object with key of users = array of all users ', () => {
+        return supertest(app).get('/api/users')
+        .expect(200)
+        .then(response => {
+            expect(Array.isArray(response.body.users)).toBe(true)
+            expect(response.body.users).toHaveLength(4)
+            response.body.users.forEach(user => {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                })
+            })
+    });
+          
 describe('PATCH /api/articles/:article_id', () => {
     it('200: should increment votes and respond with the updated article', () => {
         const votesBeforePatch = testData.articleData[1].votes

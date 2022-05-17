@@ -44,5 +44,4 @@ exports.updateArticleVotes = (req, res, next) => {
             next(err)
         })
     }
-    
 }
