@@ -19,5 +19,4 @@ exports.getArticle = (req, res, next) => {
     .catch(err => {
         next(err, req.params.article_id)
     })
-
 }
