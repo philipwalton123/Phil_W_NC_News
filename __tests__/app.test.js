@@ -160,6 +160,11 @@ describe('GET /api/articles/:article_id/comments', () => {
                     author: expect.any(String),
                     comment_id: expect.any(Number),
                     created_at: expect.any(String)
+                })
+            })
+        })
+    })
+})
 
 describe('GET /api/articles', () => {
     it('200: should return all articles including comment count', () => {
@@ -179,9 +184,7 @@ describe('GET /api/articles', () => {
                 })
             })
         })
-    });
-});
-              
+    });     
     it('200: should respond with empty array if article exists with 0 comments', () => {
         return supertest(app).get('/api/articles/4/comments')
         .expect(200)
