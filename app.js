@@ -2,8 +2,8 @@ const express = require('express')
 
 const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
-const { updateArticleVotes, getArticle, getArticles } = require('./controllers/articles.controllers')
 
+const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId } = require('./controllers/articles.controllers')
 
 const app = express()
 app.use(express.json())
@@ -23,6 +23,11 @@ app.patch('/api/articles/:article_id', updateArticleVotes)
 
 //GET all articles
 app.get('/api/articles', getArticles)
+
+
+
+//GET all comments for specified article id
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 
 app.use('/*', (req, res, next) => {

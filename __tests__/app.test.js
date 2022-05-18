@@ -147,6 +147,20 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 });
 
+describe('GET /api/articles/:article_id/comments', () => {
+    it('200: should respond with all comments for the specified article', () => {
+        return supertest(app).get('/api/articles/3/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toHaveLength(2)
+            response.body.comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    body: expect.any(String),
+                    votes: expect.any(Number),
+                    author: expect.any(String),
+                    comment_id: expect.any(Number),
+                    created_at: expect.any(String)
+
 describe('GET /api/articles', () => {
     it('200: should return all articles including comment count', () => {
         return supertest(app).get('/api/articles')
@@ -167,3 +181,28 @@ describe('GET /api/articles', () => {
         })
     });
 });
+              
+    it('200: should respond with empty array if article exists with 0 comments', () => {
+        return supertest(app).get('/api/articles/4/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toEqual([])
+        })
+    });
+    it('404: should respond with a msg if that article does not exist', () => {
+        return supertest(app).get('/api/articles/999/comments')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe('no such article with id 999')
+        })
+    });
+    it('400: should respond with a msg if given wrong type of argument', () => {
+        return supertest(app).get('/api/articles/bananas/comments')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('not a valid request')
+        })
+    });
+});
+
+
