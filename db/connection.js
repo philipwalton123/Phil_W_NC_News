@@ -8,7 +8,7 @@ require('dotenv').config({
 const config =
   ENV === 'production'
     ? {
-        connectionString: 'process.env.postgres://dvtulucluagpkb:db46fcb72e69322245141d6407ba5edcb250c00584affe76d0528c29275eddd9@ec2-34-201-95-176.compute-1.amazonaws.com:5432/deg0ri4anodfqc',
+        connectionString: process.env.DATABASE_URL,
         ssl: {
           rejectUnauthorized: false,
         },
