@@ -211,32 +211,32 @@ describe('GET /api/articles', () => {
             expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
         })
     });
-    it('200: should accept query to sort by title (A - Z)', () => {
+    it('200: should accept query to sort by title (Z - A)', () => {
         return supertest(app).get('/api/articles?sort_by=title')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toBeSortedBy('title')
+            expect(response.body.articles).toBeSortedBy('title', {descending: true})
         })
     });
-    it('200: should accept query to sort by author (A - Z)', () => {
+    it('200: should accept query to sort by author (Z - A)', () => {
         return supertest(app).get('/api/articles?sort_by=author')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toBeSortedBy('author')
+            expect(response.body.articles).toBeSortedBy('author', {descending: true})
         })
     });
-    it('200: should accept query to sort by topic (A - Z)', () => {
+    it('200: should accept query to sort by topic (Z - A)', () => {
         return supertest(app).get('/api/articles?sort_by=topic')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toBeSortedBy('topic')
+            expect(response.body.articles).toBeSortedBy('topic', {descending: true})
         })
     });
-    it('200: should accept query to sort by votes (ascending)', () => {
+    it('200: should accept query to sort by votes (descending)', () => {
         return supertest(app).get('/api/articles?sort_by=votes')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toBeSortedBy('votes', {ascending: true})
+            expect(response.body.articles).toBeSortedBy('votes', {descending: true})
         })
     });
     it('400: should respond with a msg if sort_by query is invalid', () => {

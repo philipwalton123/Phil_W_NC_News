@@ -89,7 +89,7 @@ exports.readAllArticles = (query) => {
             queryStr += ' ' + order
         }  
     } else {
-        queryStr += !query.sort_by ? ' DESC' : ' ASC';
+        queryStr += ' DESC'
     }
 
     return db.query(queryStr, topicArr)
