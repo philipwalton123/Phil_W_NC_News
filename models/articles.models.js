@@ -56,6 +56,7 @@ exports.readAllArticles = (query) => {
 
     const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body']
 
+    //handles sort_by query first
     if(query.sort_by) {
         if (!greenList.includes(query.sort_by)) {
             return Promise.reject({status:400, msg: 'invalid query'})
@@ -67,6 +68,22 @@ exports.readAllArticles = (query) => {
 
     } else {
         queryStr += ' ORDER BY articles.created_at DESC'
+    }
+
+    //handles 'order' query
+    const orderGreenList = ['ASC', 'DESC']
+    
+    if(query.order) {
+        const order = query.order.toUpperCase()
+        if(!orderGreenList.includes(order)) {
+            return Promise.reject({status:400, msg: 'invalid query'})
+        } else {
+            if (order == 'ASC') {
+                queryStr = queryStr.replace('DESC', 'ASC')
+            } else if (order == 'DESC') {
+                queryStr = queryStr.replace('ASC', 'DESC')
+            }
+        }  
     }
 
     return db.query(queryStr)

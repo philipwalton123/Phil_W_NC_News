@@ -205,43 +205,64 @@ describe.only('GET /api/articles', () => {
             })
         })
     });
-    it('should default sort the results by created_at (newest first)', () => {
+    it('200: should default sort the results by created_at (newest first)', () => {
         return supertest(app).get('/api/articles')
         .expect(200)
         .then(response => {
             expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
         })
     });
-    it('should accept query to sort by title (A - Z)', () => {
+    it('200: should accept query to sort by title (A - Z)', () => {
         return supertest(app).get('/api/articles?sort_by=title')
         .expect(200)
         .then(response => {
             expect(response.body.articles).toBeSortedBy('title')
         })
     });
-    it('should accept query to sort by author (A - Z)', () => {
+    it('200: should accept query to sort by author (A - Z)', () => {
         return supertest(app).get('/api/articles?sort_by=author')
         .expect(200)
         .then(response => {
             expect(response.body.articles).toBeSortedBy('author')
         })
     });
-    it('should accept query to sort by topic (A - Z)', () => {
+    it('200: should accept query to sort by topic (A - Z)', () => {
         return supertest(app).get('/api/articles?sort_by=topic')
         .expect(200)
         .then(response => {
             expect(response.body.articles).toBeSortedBy('topic')
         })
     });
-    it('should accept query to sort by votes (descending)', () => {
+    it('200: should accept query to sort by votes (descending)', () => {
         return supertest(app).get('/api/articles?sort_by=votes')
         .expect(200)
         .then(response => {
             expect(response.body.articles).toBeSortedBy('votes', {descending: true})
         })
     });
-    it('400: should respond with a msg if query is invalid', () => {
+    it('400: should respond with a msg if sort_by query is invalid', () => {
         return supertest(app).get('/api/articles?sort_by=age')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('invalid query')
+        })
+    });
+    it("200: should accept 'order' query to overwrite default order", () => {
+        return supertest(app).get('/api/articles?sort_by=votes&order=ASC')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('votes', {ascending: true})
+        })
+    });
+    it("200: 'order' query overwrite, also works for a-z fields ", () => {
+        return supertest(app).get('/api/articles?sort_by=author&order=desc')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('author', {descending: true})
+        })
+    });
+    it('400: should respond with a msg if order query is invalid', () => {
+        return supertest(app).get('/api/articles?order=UP')
         .expect(400)
         .then(response => {
             expect(response.body.msg).toBe('invalid query')
