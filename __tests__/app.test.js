@@ -286,16 +286,16 @@ describe('POST /api/articles/:article_id/comments', () => {
 });
 
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
     it('204: should respond with no content if row was successfully deleted', () => {
         return supertest(app).delete('/api/comments/3')
         .expect(204)
         .then(()=> {
             return supertest(app).get('/api/articles/1/comments')
-            .then(response => {
-                response.body.comments.forEach(comment => {
-                    expect(comment.comment_id).not.toBe(3)
-                })
+        })
+        .then(response => {
+            response.body.comments.forEach(comment => {
+                expect(comment.comment_id).not.toBe(3)
             })
         })
     });
