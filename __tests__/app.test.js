@@ -365,3 +365,33 @@ describe('POST /api/articles/:article_id/comments', () => {
         })
     });
 });
+
+
+describe('DELETE /api/comments/:comment_id', () => {
+    it('204: should respond with no content if row was successfully deleted', () => {
+        return supertest(app).delete('/api/comments/3')
+        .expect(204)
+        .then(()=> {
+            return supertest(app).get('/api/articles/1/comments')
+        })
+        .then(response => {
+            response.body.comments.forEach(comment => {
+                expect(comment.comment_id).not.toBe(3)
+            })
+        })
+    });
+    it('404: should respond with a msg if comment_id not found', () => {
+        return supertest(app).delete('/api/comments/25')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe('comment not found')
+        })
+    });
+    it('400: should respond with a msg if comment_id is not a number', () => {
+        return supertest(app).delete('/api/comments/first')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid request`)
+        })
+    });
+});

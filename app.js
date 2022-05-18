@@ -3,6 +3,7 @@ const express = require('express')
 const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
 const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers')
+const { deleteComment } = require('./controllers/comments.controllers')
 
 const app = express()
 app.use(express.json())
@@ -32,6 +33,12 @@ app.post('/api/articles/:article_id/comments', postComment)
 
 //POST a comment to a specified article
 app.post('/api/articles/:article_id/comments', postComment)
+
+
+
+
+//DELETE a comment
+app.delete('/api/comments/:comment_id', deleteComment)
 
 
 app.use('/*', (req, res, next) => {
