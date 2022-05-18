@@ -3,7 +3,6 @@ const supertest = require('supertest')
 const seed = require('../db/seeds/seed')
 const db = require('../db/connection')
 const testData = require('../db/data/test-data/index')
-const { forEach } = require('../db/data/test-data/articles')
 
 beforeEach(() => {
 return seed(testData)
@@ -184,13 +183,6 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe('not a valid request')
         })
     });
-    it('should default sort the results by created_at', () => {
-        return supertest(app).get('/api/articles/4/comments')
-        .expect(200)
-        .then(response => {
-            expect(response.body.comments).toEqual([])
-        })
-    });
 })
 
 describe('GET /api/articles', () => {
@@ -211,8 +203,97 @@ describe('GET /api/articles', () => {
                 })
             })
         })
-    });     
-    
+    });
+    it('200: should default sort the results by created_at (newest first)', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+    });
+    it('200: should accept query to sort by title (Z - A)', () => {
+        return supertest(app).get('/api/articles?sort_by=title')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('title', {descending: true})
+        })
+    });
+    it('200: should accept query to sort by author (Z - A)', () => {
+        return supertest(app).get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('author', {descending: true})
+        })
+    });
+    it('200: should accept query to sort by topic (Z - A)', () => {
+        return supertest(app).get('/api/articles?sort_by=topic')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('topic', {descending: true})
+        })
+    });
+    it('200: should accept query to sort by votes (descending)', () => {
+        return supertest(app).get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('votes', {descending: true})
+        })
+    });
+    it('400: should respond with a msg if sort_by query is invalid', () => {
+        return supertest(app).get('/api/articles?sort_by=age')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('invalid query')
+        })
+    });
+    it("200: should accept 'order' query to overwrite default order", () => {
+        return supertest(app).get('/api/articles?sort_by=votes&order=ASC')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('votes', {ascending: true})
+        })
+    });
+    it("200: 'order' query overwrite, also works for a-z fields ", () => {
+        return supertest(app).get('/api/articles?sort_by=author&order=desc')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('author', {descending: true})
+        })
+    });
+    it('400: should respond with a msg if order query is invalid', () => {
+        return supertest(app).get('/api/articles?order=UP')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('invalid query')
+        })
+    });
+    it("200: accepts query to filter by topic", () => {
+        return supertest(app).get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toHaveLength(11)
+            response.body.articles.forEach(article => {
+                expect(article.topic).toBe('mitch')
+            })
+        })
+    });
+    it("200: accepts query to filter by topic (test for different topic", () => {
+        return supertest(app).get('/api/articles?topic=cats')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toHaveLength(1)
+            response.body.articles.forEach(article => {
+                expect(article.topic).toBe('cats')
+            })
+        })
+    });
+    it('200: should respond with empty array if topic does not exist', () => {
+        return supertest(app).get('/api/articles?topic=dogs')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toEqual([])
+        })
+    });
 });
 
 describe('POST /api/articles/:article_id/comments', () => {
