@@ -1,6 +1,5 @@
 const db = require('../db/connection')
 const { valueExists } = require('./modelUtils')
-const format = require('pg-format')
 const { convertTimestampToDate } = require('../db/helpers/utils')
 
 
@@ -69,9 +68,8 @@ exports.addThisComment = (id, body) => {
         
     } else {
         const date = new Date(Date.now())
-        const queryStr = format('INSERT INTO comments (body, votes, author, article_id, created_at) VALUES %L RETURNING *', [[body.body, 0, body.username, id, date]])
-        console.log(queryStr)
-        return db.query(queryStr)
+        const queryStr = 'INSERT INTO comments (body, votes, author, article_id, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *'
+        return db.query(queryStr, [body.body, 0, body.username, id, date])
         .then(result => {
             return result.rows[0]
         })

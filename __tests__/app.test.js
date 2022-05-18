@@ -207,7 +207,7 @@ describe('GET /api/articles', () => {
     });
 });
 
-describe('POST /api/articles/:article_id/comments', () => {
+describe.only('POST /api/articles/:article_id/comments', () => {
     it('200: should return the new comment', () => {
         const testComment = { username: 'rogersop', body: 'I like the way you think.'}
         const commentsBeforePost = testData.commentData.length
@@ -230,6 +230,14 @@ describe('POST /api/articles/:article_id/comments', () => {
         .expect(404)
         .then(response => {
             expect(response.body.msg).toBe(`not found: invalid article id`)
+        })
+    });
+    it('400: should respond with a msg if article id is no an int', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        return supertest(app).post('/api/articles/three/comments').send(testComment)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid request`)
         })
     });
     it('400: should respond with a msg if no body is sent in the request', () => {

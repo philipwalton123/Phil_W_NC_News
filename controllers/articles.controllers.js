@@ -49,14 +49,3 @@ exports.postComment = (req, res, next) => {
         next(err)
     })
 }
-
-
-exports.postComment = (req, res, next) => {
-    addThisComment(req.params.article_id, req.body)
-    .then(comment => {
-        res.status(201).send({comment})
-    })
-    .catch(err => {
-        next(err)
-    })
-}
