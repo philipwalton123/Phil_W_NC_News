@@ -3,7 +3,6 @@ const { getThisArticle, incrementArticleVotes, readAllArticles, getTheseComments
 exports.getArticle = (req, res, next) => {
     getThisArticle(req.params.article_id)
     .then(article => {
-        console.log(article, '<<<<< controller')
         res.status(200).send({article})
     })
     .catch(err => {
@@ -47,10 +46,6 @@ exports.postComment = (req, res, next) => {
         res.status(201).send({comment})
     })
     .catch(err => {
-        console.log(err)
-        next(err)
-    })
-    .catch(err => {
         next(err)
     })
 }
@@ -62,7 +57,6 @@ exports.postComment = (req, res, next) => {
         res.status(201).send({comment})
     })
     .catch(err => {
-        console.log(err)
         next(err)
     })
 }

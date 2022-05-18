@@ -44,8 +44,6 @@ exports.getTheseComments = (id) => {
 
     return Promise.all([comments, thisArticleExists])
     .then(([comments, thisArticleExists]) => {
-        console.log(comments.rows)
-        console.log(thisArticleExists, '<<<<<<<<')
         if (thisArticleExists) {
             return comments.rows
         } else {
@@ -75,7 +73,6 @@ exports.addThisComment = (id, body) => {
         console.log(queryStr)
         return db.query(queryStr)
         .then(result => {
-            console.log(result.rows, '<<<<<result')
             return result.rows[0]
         })
     }
