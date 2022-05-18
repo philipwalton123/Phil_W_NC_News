@@ -268,6 +268,34 @@ describe.only('GET /api/articles', () => {
             expect(response.body.msg).toBe('invalid query')
         })
     });
+    it("200: accepts query to filter by topic", () => {
+        return supertest(app).get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(response => {
+            console.log(response.body.articles)
+            expect(response.body.articles).toHaveLength(11)
+            response.body.articles.forEach(article => {
+                expect(article.topic).toBe('mitch')
+            })
+        })
+    });
+    it("200: accepts query to filter by topic (test for different topic", () => {
+        return supertest(app).get('/api/articles?topic=cats')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toHaveLength(1)
+            response.body.articles.forEach(article => {
+                expect(article.topic).toBe('cats')
+            })
+        })
+    });
+    it('200: should respond with empty array if topic does not exist', () => {
+        return supertest(app).get('/api/articles?topic=dogs')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toEqual([])
+        })
+    });
 });
 
 describe('POST /api/articles/:article_id/comments', () => {
