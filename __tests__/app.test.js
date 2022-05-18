@@ -147,7 +147,7 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 });
 
-describe.only('GET /api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
     it('200: should respond with all comments for the specified article', () => {
         return supertest(app).get('/api/articles/3/comments')
         .expect(200)
@@ -160,10 +160,28 @@ describe.only('GET /api/articles/:article_id/comments', () => {
                     author: expect.any(String),
                     comment_id: expect.any(Number),
                     created_at: expect.any(String)
+
+describe('GET /api/articles', () => {
+    it('200: should return all articles including comment count', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            response.body.articles.forEach(article => {
+                expect(article).toMatchObject({
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_id: expect.any(Number),
+                    comment_count: expect.any(Number)
                 })
             })
         })
     });
+});
+              
     it('200: should respond with empty array if article exists with 0 comments', () => {
         return supertest(app).get('/api/articles/4/comments')
         .expect(200)
@@ -186,3 +204,5 @@ describe.only('GET /api/articles/:article_id/comments', () => {
         })
     });
 });
+
+

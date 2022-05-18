@@ -1,4 +1,4 @@
-const { getThisArticle, incrementArticleVotes, getTheseComments } = require("../models/articles.models")
+const { getThisArticle, incrementArticleVotes, readAllArticles, getTheseComments } = require("../models/articles.models")
 
 exports.getArticle = (req, res, next) => {
     getThisArticle(req.params.article_id)
@@ -22,6 +22,7 @@ exports.updateArticleVotes = (req, res, next) => {
     })
 }
 
+
 exports.getCommentsByArticleId = (req, res, next) => {
     getTheseComments(req.params.article_id)
     .then(comments => {
@@ -29,5 +30,13 @@ exports.getCommentsByArticleId = (req, res, next) => {
     })
     .catch(err => {
         next(err)
+    })
+}
+
+exports.getArticles = (req, res, next) => {
+    readAllArticles()
+    .then(articles => {
+        res.status(200).send({articles})
+
     })
 }

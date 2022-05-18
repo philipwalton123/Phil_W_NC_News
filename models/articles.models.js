@@ -33,6 +33,7 @@ exports.incrementArticleVotes = (id, body) => {
     }
 }
 
+
 exports.getTheseComments = (id) => {
     const comments = db.query('SELECT * FROM comments WHERE article_id = $1', [id])
     
@@ -49,3 +50,11 @@ exports.getTheseComments = (id) => {
         }
     })
 } 
+
+exports.readAllArticles = () => {
+    return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id')
+    .then(result => {
+        return result.rows
+    })
+}
+
