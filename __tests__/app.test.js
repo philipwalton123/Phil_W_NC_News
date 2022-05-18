@@ -232,11 +232,11 @@ describe('GET /api/articles', () => {
             expect(response.body.articles).toBeSortedBy('topic')
         })
     });
-    it('200: should accept query to sort by votes (descending)', () => {
+    it('200: should accept query to sort by votes (ascending)', () => {
         return supertest(app).get('/api/articles?sort_by=votes')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toBeSortedBy('votes', {descending: true})
+            expect(response.body.articles).toBeSortedBy('votes', {ascending: true})
         })
     });
     it('400: should respond with a msg if sort_by query is invalid', () => {

@@ -73,10 +73,8 @@ exports.readAllArticles = (query) => {
             queryStr += ` ORDER BY articles.${query.sort_by}`
         }
 
-        queryStr += query.sort_by === 'votes' ? ' DESC' : ' ASC';
-
     } else {
-        queryStr += ' ORDER BY articles.created_at DESC'
+        queryStr += ' ORDER BY articles.created_at'
     }
 
 
@@ -88,12 +86,10 @@ exports.readAllArticles = (query) => {
         if(!orderGreenList.includes(order)) {
             return Promise.reject({status:400, msg: 'invalid query'})
         } else {
-            if (order == 'ASC') {
-                queryStr = queryStr.replace('DESC', 'ASC')
-            } else if (order === 'DESC') {
-                queryStr = queryStr.replace('ASC', 'DESC')
-            }
+            queryStr += ' ' + order
         }  
+    } else {
+        queryStr += !query.sort_by ? ' DESC' : ' ASC';
     }
 
     return db.query(queryStr, topicArr)
