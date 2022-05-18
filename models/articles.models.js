@@ -1,6 +1,8 @@
 const db = require('../db/connection')
 const { valueExists } = require('./modelUtils')
 const format = require('pg-format')
+const { convertTimestampToDate } = require('../db/helpers/utils')
+
 
 exports.getThisArticle = (id) => {
     return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST(COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.article_id = $1 GROUP BY articles.article_id', [id])
