@@ -163,27 +163,6 @@ describe('GET /api/articles/:article_id/comments', () => {
             })
         })
     })
-})
-
-describe('GET /api/articles', () => {
-    it('200: should return all articles including comment count', () => {
-        return supertest(app).get('/api/articles')
-        .expect(200)
-        .then(response => {
-            response.body.articles.forEach(article => {
-                expect(article).toMatchObject({
-                    title: expect.any(String),
-                    topic: expect.any(String),
-                    author: expect.any(String),
-                    body: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number),
-                    article_id: expect.any(Number),
-                    comment_count: expect.any(Number)
-                })
-            })
-        })
-    });     
     it('200: should respond with empty array if article exists with 0 comments', () => {
         return supertest(app).get('/api/articles/4/comments')
         .expect(200)
@@ -205,9 +184,38 @@ describe('GET /api/articles', () => {
             expect(response.body.msg).toBe('not a valid request')
         })
     });
+    it('should default sort the results by created_at', () => {
+        return supertest(app).get('/api/articles/4/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toEqual([])
+        })
+    });
+})
+
+describe('GET /api/articles', () => {
+    it('200: should return all articles including comment count', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            response.body.articles.forEach(article => {
+                expect(article).toMatchObject({
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_id: expect.any(Number),
+                    comment_count: expect.any(Number)
+                })
+            })
+        })
+    });     
+    
 });
 
-describe.only('POST /api/articles/:article_id/comments', () => {
+describe('POST /api/articles/:article_id/comments', () => {
     it('200: should return the new comment', () => {
         const testComment = { username: 'rogersop', body: 'I like the way you think.'}
         const commentsBeforePost = testData.commentData.length
