@@ -3,7 +3,7 @@ const supertest = require('supertest')
 const seed = require('../db/seeds/seed')
 const db = require('../db/connection')
 const testData = require('../db/data/test-data/index')
-const { forEach } = require('../db/data/test-data/articles')
+require('jest-sorted')
 
 beforeEach(() => {
 return seed(testData)
@@ -184,16 +184,9 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe('not a valid request')
         })
     });
-    it('should default sort the results by created_at', () => {
-        return supertest(app).get('/api/articles/4/comments')
-        .expect(200)
-        .then(response => {
-            expect(response.body.comments).toEqual([])
-        })
-    });
 })
 
-describe('GET /api/articles', () => {
+describe.only('GET /api/articles', () => {
     it('200: should return all articles including comment count', () => {
         return supertest(app).get('/api/articles')
         .expect(200)
@@ -211,8 +204,49 @@ describe('GET /api/articles', () => {
                 })
             })
         })
-    });     
-    
+    });
+    it('should default sort the results by created_at (newest first)', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+    });
+    it('should accept query to sort by title (A - Z)', () => {
+        return supertest(app).get('/api/articles?sort_by=title')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('title')
+        })
+    });
+    it('should accept query to sort by author (A - Z)', () => {
+        return supertest(app).get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('author')
+        })
+    });
+    it('should accept query to sort by topic (A - Z)', () => {
+        return supertest(app).get('/api/articles?sort_by=topic')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('topic')
+        })
+    });
+    it('should accept query to sort by votes (descending)', () => {
+        return supertest(app).get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(response => {
+            expect(response.body.articles).toBeSortedBy('votes', {descending: true})
+        })
+    });
+    it('400: should respond with a msg if query is invalid', () => {
+        return supertest(app).get('/api/articles?sort_by=age')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('invalid query')
+        })
+    });
 });
 
 describe('POST /api/articles/:article_id/comments', () => {

@@ -51,8 +51,25 @@ exports.getTheseComments = (id) => {
     })
 } 
 
-exports.readAllArticles = () => {
-    return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id')
+exports.readAllArticles = (query) => {
+    let queryStr = "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id"
+
+    const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body']
+
+    if(query.sort_by) {
+        if (!greenList.includes(query.sort_by)) {
+            return Promise.reject({status:400, msg: 'invalid query'})
+        } else {
+            queryStr += ` ORDER BY articles.${query.sort_by}`
+        }
+
+        queryStr += query.sort_by == 'votes' ? ' DESC' : ' ASC';
+
+    } else {
+        queryStr += ' ORDER BY articles.created_at DESC'
+    }
+
+    return db.query(queryStr)
     .then(result => {
         return result.rows
     })
