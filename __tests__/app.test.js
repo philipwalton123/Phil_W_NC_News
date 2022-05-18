@@ -3,7 +3,6 @@ const supertest = require('supertest')
 const seed = require('../db/seeds/seed')
 const db = require('../db/connection')
 const testData = require('../db/data/test-data/index')
-require('jest-sorted')
 
 beforeEach(() => {
 return seed(testData)
@@ -186,7 +185,7 @@ describe('GET /api/articles/:article_id/comments', () => {
     });
 })
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     it('200: should return all articles including comment count', () => {
         return supertest(app).get('/api/articles')
         .expect(200)
@@ -272,7 +271,6 @@ describe.only('GET /api/articles', () => {
         return supertest(app).get('/api/articles?topic=mitch')
         .expect(200)
         .then(response => {
-            console.log(response.body.articles)
             expect(response.body.articles).toHaveLength(11)
             response.body.articles.forEach(article => {
                 expect(article.topic).toBe('mitch')
