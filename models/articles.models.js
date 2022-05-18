@@ -1,5 +1,7 @@
 const db = require('../db/connection')
 const { valueExists } = require('./modelUtils')
+const { convertTimestampToDate } = require('../db/helpers/utils')
+
 
 exports.getThisArticle = (id) => {
     return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST(COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.article_id = $1 GROUP BY articles.article_id', [id])
@@ -41,8 +43,6 @@ exports.getTheseComments = (id) => {
 
     return Promise.all([comments, thisArticleExists])
     .then(([comments, thisArticleExists]) => {
-        console.log(comments.rows)
-        console.log(thisArticleExists, '<<<<<<<<')
         if (thisArticleExists) {
             return comments.rows
         } else {
@@ -58,3 +58,20 @@ exports.readAllArticles = () => {
     })
 }
 
+exports.addThisComment = (id, body) => {
+
+    if(Object.keys(body).length === 0 || !body.hasOwnProperty('body') || !body.hasOwnProperty('username')) {
+        return Promise.reject({status: 400, msg: "malformed post"})
+        
+    } else if (typeof body.body != 'string' || typeof body.username != 'string') {
+        return Promise.reject({status: 400, msg: "invalid value type"})
+        
+    } else {
+        const date = new Date(Date.now())
+        const queryStr = 'INSERT INTO comments (body, votes, author, article_id, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *'
+        return db.query(queryStr, [body.body, 0, body.username, id, date])
+        .then(result => {
+            return result.rows[0]
+        })
+    }
+}

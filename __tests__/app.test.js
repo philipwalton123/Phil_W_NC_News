@@ -39,7 +39,6 @@ describe('GET /api/articles/:article_id', () => {
         return supertest(app).get('/api/articles/3')
         .expect(200)
         .then(response => {
-            console.log(response.body, '<<<<in test')
             expect(response.body.article).toMatchObject({
                 title: "Eight pug gifs that remind me of mitch",
                 topic: "mitch",
@@ -208,4 +207,72 @@ describe('GET /api/articles', () => {
     });
 });
 
-
+describe.only('POST /api/articles/:article_id/comments', () => {
+    it('200: should return the new comment', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        const commentsBeforePost = testData.commentData.length
+        return supertest(app).post('/api/articles/3/comments').send(testComment)
+        .expect(201)
+        .then(response => {
+            expect(response.body.comment).toEqual({
+                article_id: 3,
+                author: 'rogersop',
+                body: 'I like the way you think.',
+                comment_id: commentsBeforePost + 1,
+                created_at: expect.any(String),
+                votes: 0
+            })
+        })
+    });
+    it('404: should respond with a msg if article id does not exist', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        return supertest(app).post('/api/articles/13/comments').send(testComment)
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe(`not found: invalid article id`)
+        })
+    });
+    it('400: should respond with a msg if article id is no an int', () => {
+        const testComment = { username: 'rogersop', body: 'I like the way you think.'}
+        return supertest(app).post('/api/articles/three/comments').send(testComment)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid request`)
+        })
+    });
+    it('400: should respond with a msg if no body is sent in the request', () => {
+        return supertest(app).post('/api/articles/3/comments').send()
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if body does not have username property', () => {
+        return supertest(app).post('/api/articles/3/comments').send({body: 'hi'})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if body does not have body property', () => {
+        return supertest(app).post('/api/articles/3/comments').send({username: 'rogersop'})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if body is not a string', () => {
+        return supertest(app).post('/api/articles/3/comments').send({username: 'rogersop', body: true})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`invalid value type`)
+        })
+    });
+    it('404: should respond with a msg if username is not an existing author', () => {
+        return supertest(app).post('/api/articles/3/comments').send({username: 'phil', body: 'hi'})
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe(`not found: invalid user`)
+        })
+    });
+});
