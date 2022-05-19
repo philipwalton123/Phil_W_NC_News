@@ -1,5 +1,5 @@
 const express = require('express')
-
+const apiRouter = require('./api-router')
 const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
 const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers')
@@ -8,38 +8,37 @@ const { getEndpoints } = require('./controllers/endpoints.controller.js')
 const app = express()
 app.use(express.json())
 
+//Use the router
+app.use('/', apiRouter)
+
 //GET all topics
-app.get('/api/topics', getTopics)
+//app.get('/api/topics', getTopics)
 
 //GET article by article_id number
-app.get('/api/articles/:article_id', getArticle)
+//app.get('/api/articles/:article_id', getArticle)
 
 
 //GET all users
-app.get('/api/users', getUsers)
+//app.get('/api/users', getUsers)
 
 //PATCH change number of votes for an article
-app.patch('/api/articles/:article_id', updateArticleVotes)
+//app.patch('/api/articles/:article_id', updateArticleVotes)
 
 //GET all articles
-app.get('/api/articles', getArticles)
+//app.get('/api/articles', getArticles)
 
 //GET all comments for specified article id
-app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+//app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 //POST a comment to a specified article
-app.post('/api/articles/:article_id/comments', postComment)
-
-
-//POST a comment to a specified article
-app.post('/api/articles/:article_id/comments', postComment)
+//app.post('/api/articles/:article_id/comments', postComment)
 
 // GET a json describing all available endpoints
-app.get('/api', getEndpoints)
+//app.get('/api', getEndpoints)
 
 
 //DELETE a comment
-app.delete('/api/comments/:comment_id', deleteComment)
+//app.delete('/api/comments/:comment_id', deleteComment)
 
 
 app.use('/api/*', (req, res, next) => {
