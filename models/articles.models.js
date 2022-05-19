@@ -64,7 +64,7 @@ exports.readAllArticles = (query) => {
     queryStr += ' GROUP BY articles.article_id'
 
     //handles sort_by query
-    const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body']
+    const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body', 'comment_count']
 
     if(query.sort_by) {
         if (!greenList.includes(query.sort_by)) {
