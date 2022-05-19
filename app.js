@@ -41,10 +41,10 @@ app.post('/api/articles/:article_id/comments', postComment)
 app.delete('/api/comments/:comment_id', deleteComment)
 
 
-// app.use('/*', (req, res, next) => {
-//     res.status(404).send({msg: "not found"})
-//     next()
-// })
+app.use('/*', (req, res, next) => {
+    res.status(404).send({msg: "not found"})
+    next()
+})
 
 app.use((err, req, res, next) => {
     if (err.code === '22P02') {
