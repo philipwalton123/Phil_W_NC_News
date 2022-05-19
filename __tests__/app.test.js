@@ -416,7 +416,7 @@ describe('GET /api', () => {
     });
 });
 
-describe.only('GET /api/users/:username', () => {
+describe('GET /api/users/:username', () => {
     it('200: should return the specified user\s details', () => {
        return supertest(app).get('/api/users/lurker')
        .expect(200)
@@ -438,7 +438,7 @@ describe.only('GET /api/users/:username', () => {
     });
 });
 
-describe.only('PATCH /api/comments/:comment_id', () => {
+describe('PATCH /api/comments/:comment_id', () => {
     it('200: should increment votes and respond with the updated comment', () => {
         const votesBeforePatch = testData.commentData[1].votes
         return supertest(app).patch('/api/comments/2').send({inc_votes: 3})
@@ -487,6 +487,25 @@ describe.only('PATCH /api/comments/:comment_id', () => {
         .expect(400)
         .then(response => {
             expect(response.body.msg).toBe("inc_votes must be an integer")
+        })
+    });
+});
+
+describe.only('POST /api/articles', () => {
+    it('200: should add the article and return it to client', () => {
+        const testArticle= { author: 'rogersop', body: 'This is MY story.', topic: 'life', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(201)
+        .then(response => {
+            expect(response.body.comment).toEqual({
+                article_id: 13,
+                author: 'rogersop',
+                body: 'This is MY story.',
+                topic: 'life',
+                created_at: expect.any(String),
+                votes: 0,
+                comments: 0
+            })
         })
     });
 });

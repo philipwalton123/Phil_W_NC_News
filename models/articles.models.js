@@ -115,3 +115,21 @@ exports.addThisComment = (id, body) => {
         })
     }
 }
+
+exports.addThisArticle = (body) => {
+    if(Object.keys(body).length === 0 || !body.hasOwnProperty('body') || !body.hasOwnProperty('author') || !body.hasOwnProperty('title') || !body.hasOwnProperty('topic')) {
+        return Promise.reject({status: 400, msg: "malformed post"})
+        
+    } else if (typeof body.body != 'string' || typeof body.author != 'string' || typeof body.title != 'string' || typeof body.topic != 'string') {
+        return Promise.reject({status: 400, msg: "invalid value type"})
+        
+    } else {
+        const date = new Date(Date.now())
+        const queryStr = 'INSERT INTO articles (title, topic, body, author, created_at, votes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'
+        return db.query(queryStr, [body.title, body.title, body.body, body.author, date, 0])
+        .then(result => {
+            result.rows[0].comment_count = 0
+            return result.rows[0]
+        })
+    }
+}
