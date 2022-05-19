@@ -1,5 +1,5 @@
 const express = require('express')
-
+const apiRouter = require('./api-router')
 const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
 const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers')
@@ -7,6 +7,9 @@ const { deleteComment } = require('./controllers/comments.controllers')
 const { getEndpoints } = require('./controllers/endpoints.controller.js')
 const app = express()
 app.use(express.json())
+
+//Use the router
+app.use('/api', apiRouter)
 
 //GET all topics
 app.get('/api/topics', getTopics)
