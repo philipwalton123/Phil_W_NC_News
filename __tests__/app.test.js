@@ -437,3 +437,56 @@ describe.only('GET /api/users/:username', () => {
        })
     });
 });
+
+describe.only('PATCH /api/comments/:comment_id', () => {
+    it('200: should increment votes and respond with the updated comment', () => {
+        const votesBeforePatch = testData.commentData[1].votes
+        return supertest(app).patch('/api/comments/2').send({inc_votes: 3})
+        .expect(200)
+        .then(response => {
+            expect(response.body.comment).toEqual ({
+                comment_id: 2,
+                body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+                votes: votesBeforePatch + 3,
+                author: "butter_bridge",
+                article_id: 1,
+                created_at: expect.any(String)
+              })
+        })
+    });
+    it('404: should respond with a msg if comment does not exist', () => {
+        return supertest(app).patch('/api/comments/20').send({inc_votes: 3})
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe("no such comment with id 20")
+        })
+    });
+    it('400: should respond with a msg if given wrong type of argument', () => {
+        return supertest(app).patch('/api/comments/bananas').send({inc_votes: 3})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("not a valid request")
+        })
+    });
+    it('400: should respond with a msg if no body is sent in the request', () => {
+        return supertest(app).patch('/api/comments/2').send()
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be provided")
+        })
+    });
+    it('400: should respond with a msg if body does not have inc_count property', () => {
+        return supertest(app).patch('/api/comments/2').send({id: 8})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be provided")
+        })
+    });
+    it('400: should respond with a msg if inc_count is not a number', () => {
+        return supertest(app).patch('/api/comments/2').send({inc_votes: true})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("inc_votes must be an integer")
+        })
+    });
+});
