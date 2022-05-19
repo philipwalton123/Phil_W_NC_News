@@ -70,7 +70,7 @@ exports.readAllArticles = (query) => {
         if (!greenList.includes(query.sort_by)) {
             return Promise.reject({status:400, msg: 'invalid query'})
         } else {
-            queryStr += ` ORDER BY articles.${query.sort_by}`
+            queryStr += query.sort_by == 'comment_count' ? ` ORDER BY comment_count` : ` ORDER BY articles.${query.sort_by}`
         }
 
     } else {
