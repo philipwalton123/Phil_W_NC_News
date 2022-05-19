@@ -1,0 +1,111 @@
+{
+    "GET /api": {
+      "description": "serves up a json representation of all the available endpoints of the api"
+    },
+    "GET /api/topics": {
+      "description": "serves up an array of all topics",
+      "queries": [],
+      "exampleResponse": {
+        "topics": [{ "slug": "football", "description": "Footie!" }]
+      }
+    },
+    "GET /api/users": {
+      "description": "serves up an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "users": [{
+          "username": "mrpink",
+          "name": "steve buscemi",
+          "avatar_url": "www.heistgonewrong.com"
+        }]
+      }
+    },
+    "GET /api/articles": {
+      "description": "serves up an array of all articles default sorted by date created DESC",
+      "queries": ["author", "topic", "sort_by", "order", "created_at"],
+      "exampleResponse": {
+        "articles": [
+          {
+            "title": "Seafood substitutions are increasing",
+            "topic": "cooking",
+            "author": "weegembump",
+            "body": "Text from the article..",
+            "created_at": 1527695953341,
+            "votes": 3,
+            "article_id": 10
+          }
+        ]
+      }
+    },
+    "GET /api/articles/:article_id": {
+      "description": "serves up the article matching the given article_id",
+      "queries": [],
+      "exampleResponse": {
+        "article": [
+          {
+            "title": "Seafood substitutions are increasing",
+            "topic": "cooking",
+            "author": "weegembump",
+            "body": "Text from the article..",
+            "created_at": 1527695953341,
+            "votes": 3,
+            "article_id": 10
+          }
+        ]
+      }
+    },
+    "PATCH /api/articles/:article_id": {
+      "description": "increments the article's vote count",
+      "queries": [],
+      "exampleBody": {"inc_votes": 3},
+      "exampleResponse": {
+        "article": [
+          {
+            "title": "Seafood substitutions are increasing",
+            "topic": "cooking",
+            "author": "weegembump",
+            "body": "Text from the article..",
+            "created_at": 1527695953341,
+            "votes": 6,
+            "article_id": 10
+          }
+        ]
+      }
+    },
+    "GET /api/articles/:article_id/comments": {
+      "description": "serves up an array of all comments for the specified article_id",
+      "queries": [],
+      "exampleResponse": {
+        "comments": [
+          {
+            "body": "The beautiful thing about treasure is...",
+            "author": "butter_bridge",
+            "article_id": 1,
+            "created_at": 1604113380000,
+            "comment_id": 6
+          }
+        ]
+      }
+    },
+    "POST /api/articles/:article_id/comments": {
+      "description": "posts a new comment, assigns a corresponding article_id, timestamp andc new comment_id",
+      "queries": [],
+      "exampleBody": { "username": "butter_bridge", "body": "The beautiful thing about treasure is..."},
+      "exampleResponse": {
+        "comments": [
+          {
+            "body": "The beautiful thing about treasure is...",
+            "author": "butter_bridge",
+            "article_id": 1,
+            "created_at": 1604113380000,
+            "comment_id": 6
+          }
+        ]
+      }
+    },
+    "DELETE /api/comments/:comment_id": {
+      "description": "removes the comment with the specified comment_id",
+      "queries": [],
+      "exampleResponse": "none"
+    }
+  }
