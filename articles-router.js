@@ -1,25 +1,17 @@
+const { getArticles, getArticle, updateArticleVotes, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers');
+
 const articleRouter = require('express').Router()
 
-articleRouter.get('/', (req, res) => {
-    res.status(200).send("All is well from api/articles")
-})
+articleRouter.get('/', getArticles)
 
 articleRouter
     .route('/:article_id')
-    .get((req, res) => {
-        res.status(200).send("All is well from GET api/articles/:article_id")
-    })
-    .patch((req, res) => {
-        res.status(200).send("All is well from PATCH api/articles/:article_id")
-    });
+    .get(getArticle)
+    .patch(updateArticleVotes);
 
 articleRouter
     .route('/:article_id/comments')
-    .get((req, res) => {
-        res.status(200).send("All is well from GET api/articles/:article_id/comments")
-    })
-    .post((req, res) => {
-        res.status(200).send("All is well from POST api/articles/:article_id/comments")
-    })
+    .get(getCommentsByArticleId)
+    .post(postComment)
 
 module.exports = articleRouter
