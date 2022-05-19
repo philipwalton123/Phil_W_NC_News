@@ -4,7 +4,7 @@ const { getUsers } = require('./controllers/users.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
 const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers')
 const { deleteComment } = require('./controllers/comments.controllers')
-
+const { getEndpoints } = require('./controllers/endpoints.controller.js')
 const app = express()
 app.use(express.json())
 
@@ -34,7 +34,8 @@ app.post('/api/articles/:article_id/comments', postComment)
 //POST a comment to a specified article
 app.post('/api/articles/:article_id/comments', postComment)
 
-
+// GET a json describing all available endpoints
+app.get('/api', getEndpoints)
 
 
 //DELETE a comment
