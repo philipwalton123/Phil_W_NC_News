@@ -42,7 +42,7 @@ app.get('/api', getEndpoints)
 app.delete('/api/comments/:comment_id', deleteComment)
 
 
-app.use('/*', (req, res, next) => {
+app.use('/api/*', (req, res, next) => {
     res.status(404).send({msg: "not found"})
     next()
 })
