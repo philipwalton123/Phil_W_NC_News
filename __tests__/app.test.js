@@ -396,7 +396,7 @@ describe('DELETE /api/comments/:comment_id', () => {
     });
 });
 
-describe.only('GET /api', () => {
+describe('GET /api', () => {
     it('200: should respond with a json describing all available endpoints', () => {
         return supertest(app).get('/api')
         .expect(200)
