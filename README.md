@@ -99,5 +99,5 @@ You must add two .env files to the root directory, pointing to the databases you
 
 As a minumum, you will need
 
-- Node.js v???? or later
-- Postgres v???? or later
+- Node.js v6.9.0 or later
+- Postgres v2.2.0 or later
