@@ -35,15 +35,40 @@ exports.incrementArticleVotes = (id, body) => {
 }
 
 
-exports.getTheseComments = (id) => {
-    const comments = db.query('SELECT * FROM comments WHERE article_id = $1', [id])
+exports.getTheseComments = (id, query) => {
+    let queryStr = 'SELECT * FROM comments WHERE article_id = $1'
+
+    //Handles 'limit' query
+    let L = 10
+    if (query.limit) {
+        if (parseInt(query.limit) < 1 || parseInt(query.limit) > 50) {
+            return Promise.reject({status:400, msg: 'limit must be int 0 < _ > 50'})
+        } else {
+            L = query.limit
+        }
+    }
+    queryStr += ` LIMIT ${L}`
+    
+    //Handles 'p' query
+    if(query.p) {
+        if (parseInt(query.p) < 1 || parseInt(query.p) == NaN) {
+            return Promise.reject({status:400, msg: 'p must be a positive int'})
+        } else {
+            const p = parseInt(query.p)
+            queryStr += ` OFFSET ${((p - 1) * L)}`
+        }
+    }
+
+    const selection = db.query(queryStr, [id])
+
+    const total = db.query('SELECT * FROM comments WHERE article_id = $1', [id])
     
     const thisArticleExists = valueExists('articles', 'article_id', id)
 
-    return Promise.all([comments, thisArticleExists])
-    .then(([comments, thisArticleExists]) => {
+    return Promise.all([selection, total, thisArticleExists])
+    .then(([selection, total, thisArticleExists]) => {
         if (thisArticleExists) {
-            return comments.rows
+            return {comments: selection.rows, comment_count: total.rows.length }
         } else {
             return Promise.reject({status: 404, msg: `no such article with id ${id}`})
         }
