@@ -24,6 +24,8 @@ app.use((err, req, res, next) => {
     } else if(err.code === '23503') {
         if (/not present in table "users"/.test(err.detail)){
             res.status(404).send({msg: `not found: invalid user`})
+        } else if (/not present in table "topics"/.test(err.detail)){
+            res.status(404).send({msg: `not found: invalid topic`})
         } else {
             res.status(404).send({msg: `not found: invalid article id`})
         }

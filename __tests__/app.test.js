@@ -525,4 +525,52 @@ describe('POST /api/articles', () => {
             })
         })
     });
+    it('404: should respond with a msg if author is not an existing user', () => {
+        const testArticle= { author: 'phil', body: 'This is MY story.', topic: 'cats', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe("not found: invalid user")
+        })
+    });
+    it('404: should respond with a msg if topic is not an existing topic', () => {
+        const testArticle= { author: 'rogersop', body: 'This is MY story.', topic: 'gardening', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe("not found: invalid topic")
+        })
+    });
+    it('400: should respond with a msg if post has no body property', () => {
+        const testArticle= { author: 'rogersop', topic: 'cats', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("malformed post")
+        })
+    });
+    it('400: should respond with a msg if post has no title property', () => {
+        const testArticle= { author: 'rogersop', body: 'This is MY story.', topic: 'cats'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("malformed post")
+        })
+    });
+    it('400: should respond with a msg if post has no author property', () => {
+        const testArticle= { body: 'This is MY story.', topic: 'cats', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("malformed post")
+        })
+    });
+    it('400: should respond with a msg if post has no topic property', () => {
+        const testArticle= { author: 'rogersop', body: 'This is MY story.', title: 'The Real Me'}
+        return supertest(app).post('/api/articles').send(testArticle)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("malformed post")
+        })
+    });
 });

@@ -131,5 +131,5 @@ exports.addThisArticle = (body) => {
             result.rows[0].comment_count = 0
             return result.rows[0]
         })
-    }c
+    }
 }
