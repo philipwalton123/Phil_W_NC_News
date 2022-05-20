@@ -64,7 +64,7 @@ exports.readAllArticles = (query) => {
     queryStr += ' GROUP BY articles.article_id'
 
     //handles sort_by query
-    const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body', 'comment_count']
+    const greenList = ['article_id', 'title', 'created_at', 'author', 'topic', 'votes', 'body', 'comment_count']
 
     if(query.sort_by) {
         if (!greenList.includes(query.sort_by)) {
@@ -91,6 +91,36 @@ exports.readAllArticles = (query) => {
     } else {
         queryStr += ' DESC'
     }
+
+    //handles 'limit' query
+    let L = 10
+    if (query.limit) {
+        console.log(query.limit)
+        console.log(parseInt(query.limit), '<<<<< parseINt')
+        if (parseInt(query.limit) < 1 || parseInt(query.limit) > 50) {
+            console.log('rejecting')
+            return Promise.reject({status:400, msg: 'limit must be int 0 < _ > 50'})
+        } else {
+            L = query.limit
+        }
+    }
+    queryStr += ` LIMIT ${L}`
+    
+
+    //handles 'p' query
+    if(query.p) {
+        console.log('p exists')
+        if (parseInt(query.p) < 1 || parseInt(query.p) == NaN) {
+            console.log('rejecting')
+            return Promise.reject({status:400, msg: 'p must be a positive int'})
+        } else {
+            console.log('adding OFFSET to queryStr')
+            const p = parseInt(query.p)
+            queryStr += ` OFFSET ${((p - 1) * L)}`
+        }
+    }
+
+    console.log(queryStr)
 
     return db.query(queryStr, topicArr)
     .then(result => {
