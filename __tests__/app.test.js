@@ -745,3 +745,51 @@ describe('POST /api/articles', () => {
         })
     });
 });
+
+describe('POST /api/topics', () => {
+    it('201: should post the new topic', () => {
+        const testTopic = {slug: "food", description: "it's all about that food"}
+        return supertest(app).post('/api/topics').send(testTopic)
+        .expect(201)
+        .then(response => {
+            expect(response.body.topic).toEqual(testTopic)
+        })
+    });
+    it('400: should respond with a msg if no body is sent in the request', () => {
+        return supertest(app).post('/api/topics').send()
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if body does not have slug property', () => {
+        return supertest(app).post('/api/topics').send({description: "it's all about that food"})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if body does not have body property', () => {
+        return supertest(app).post('/api/topics').send({slug: 'food'})
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`malformed post`)
+        })
+    });
+    it('400: should respond with a msg if description is not a string', () => {
+        const testTopic = {slug: "food", description: true}
+        return supertest(app).post('/api/topics').send(testTopic)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`invalid value type`)
+        })
+    });
+    it('400: should respond with a msg if description is not a string', () => {
+        const testTopic = {slug: true, description: "it's all about that food"}
+        return supertest(app).post('/api/topics').send(testTopic)
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`invalid value type`)
+        })
+    });
+});

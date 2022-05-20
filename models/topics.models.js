@@ -28,3 +28,20 @@ exports.incrementArticleVotes = (id, increment) => {
         }
     })
 }
+
+exports.addThisTopic = (body) => {
+
+    if(Object.keys(body).length === 0 || !body.hasOwnProperty('slug') || !body.hasOwnProperty('description')) {
+        return Promise.reject({status: 400, msg: "malformed post"})
+        
+    } else if (typeof body.slug != 'string' || typeof body.description != 'string') {
+        return Promise.reject({status: 400, msg: "invalid value type"})
+    } else {
+        return db.query('INSERT INTO topics (description, slug) VALUES ($1, $2) RETURNING *', [body.description, body.slug])
+        .then(result => {
+            return result.rows[0]
+        })
+    }
+
+    
+}
