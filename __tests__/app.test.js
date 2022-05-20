@@ -145,7 +145,7 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 });
 
-describe.only('GET /api/articles/:article_id/comments', () => {
+describe('GET /api/articles/:article_id/comments', () => {
     it('200: should respond with all comments for the specified article', () => {
         return supertest(app).get('/api/articles/3/comments')
         .expect(200)
@@ -190,83 +190,86 @@ describe.only('GET /api/articles/:article_id/comments', () => {
             expect(response.body.comments).toHaveLength(5)
         })
     });
-    // it("200: should default 'limit' to 10 if not specified", () => {
-    //     return supertest(app).get('/api/articles')
-    //     .expect(200)
-    //     .then(response => {
-    //         expect(response.body.articles).toHaveLength(10)
-    //     })
-    // });
-    // it("200: should accept 'p' query to display next n articles (?p=2 second page)", () => {
-    //     return supertest(app).get('/api/articles?sort_by=article_id&order=ASC&p=2')
-    //     .expect(200)
-    //     .then(response => {
-    //         response.body.articles.forEach(article => {
-    //             expect(article.article_id).toBeGreaterThan(10)
-    //         })
-    //     })
-    // });
-    // it("200: should accept 'p=1' query (same as not specifing p)", () => {
-    //     return supertest(app).get('/api/articles?sort_by=article_id&order=ASC&p=1')
-    //     .expect(200)
-    //     .then(response => {
-    //         response.body.articles.forEach(article => {
-    //             expect(article.article_id).toBeLessThan(11)
-    //         })
-    //     })
-    // });
-    // it("200: should accept combination of 'limit' and 'p' queries", () => {
-    //     return supertest(app).get('/api/articles?sort_by=article_id&order=ASC&limit=4&p=3')
-    //     .expect(200)
-    //     .then(response => {
-    //         response.body.articles.forEach(article => {
-    //             expect(article.article_id).toBeGreaterThan(8)
-    //             expect(article.article_id).toBeLessThan(13)
-    //         })
-    //     })
-    // });
-    // it('400: should respond with a msg if limit query is invalid', () => {
-    //     return supertest(app).get('/api/articles?limit=ten')
-    //     .expect(400)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe(`not a valid query`)
-    //     })
-    // });
-    // it('400: should respond with a msg if limit query is negative', () => {
-    //     return supertest(app).get('/api/articles?limit=-5')
-    //     .expect(400)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe('limit must be int 0 < _ > 50')
-    //     })
-    // });
-    // it('400: should respond with a msg if p query is invalid', () => {
-    //     return supertest(app).get('/api/articles?p=two')
-    //     .expect(400)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe(`not a valid query`)
-    //     })
-    // });
-    // it('400: should respond with a msg if p query is negative', () => {
-    //     return supertest(app).get('/api/articles?p=-2')
-    //     .expect(400)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe(`p must be a positive int`)
-    //     })
-    // });
-    // it('200: should respond with no articles if p > no. of pages', () => {
-    //     return supertest(app).get('/api/articles?sort_by=article_id&order=asc&p=8')
-    //     .expect(200)
-    //     .then(response => {
-    //         expect(response.body.articles).toEqual([])
-    //     })
-    // });
-    // it('200: response should include a key of article_count', () => {
-    //     return supertest(app).get('/api/articles')
-    //     .expect(200)
-    //     .then(response => {
-    //         expect(response.body.article_count).toBe(12)
-    //     })
-    // });
+    it("200: should default 'limit' to 10 if not specified", () => {
+        return supertest(app).get('/api/articles/1/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toHaveLength(10)
+        })
+    });
+    it("200: should accept 'p' query to display next n articles (?p=2 second page)", () => {
+        return supertest(app).get('/api/articles/1/comments?p=2')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toHaveLength(1)
+            response.body.comments.forEach(comment => {
+                expect(comment.comment_id).toBeGreaterThan(13)
+            })
+        })
+    });
+    it("200: should accept 'p=1' query (same as not specifing p)", () => {
+        return supertest(app).get('/api/articles/1/comments?p=1')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toHaveLength(10)
+            response.body.comments.forEach(comment => {
+                expect(comment.comment_id).toBeLessThan(14)
+            })
+        })
+    });
+    it("200: should accept combination of 'limit' and 'p' queries", () => {
+        return supertest(app).get('/api/articles/1/comments?limit=3&p=3')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toHaveLength(3)
+            response.body.comments.forEach(comment => {
+                expect(comment.comment_id).toBeGreaterThan(7)
+                expect(comment.comment_id).toBeLessThan(13)
+            })
+        })
+    });
+    it('400: should respond with a msg if limit query is invalid', () => {
+        return supertest(app).get('/api/articles/1/comments?limit=ten')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid query`)
+        })
+    });
+    it('400: should respond with a msg if limit query is negative', () => {
+        return supertest(app).get('/api/articles/1/comments?limit=-5')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe('limit must be int 0 < _ > 50')
+        })
+    });
+    it('400: should respond with a msg if p query is invalid', () => {
+        return supertest(app).get('/api/articles/1/comments?p=two')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid query`)
+        })
+    });
+    it('400: should respond with a msg if p query is negative', () => {
+        return supertest(app).get('/api/articles/1/comments?p=-2')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`p must be a positive int`)
+        })
+    });
+    it('200: should respond with no articles if p > no. of pages', () => {
+        return supertest(app).get('/api/articles/1/comments?p=8')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comments).toEqual([])
+        })
+    });
+    it('200: response should include a key of comment_count', () => {
+        return supertest(app).get('/api/articles/1/comments')
+        .expect(200)
+        .then(response => {
+            expect(response.body.comment_count).toBe(11)
+        })
+    });
 })
 
 describe('GET /api/articles', () => {

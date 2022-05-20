@@ -25,7 +25,7 @@ exports.updateArticleVotes = (req, res, next) => {
 exports.getCommentsByArticleId = (req, res, next) => {
     getTheseComments(req.params.article_id, req.query)
     .then(comments => {
-        res.status(200).send({comments})
+        res.status(200).send(comments)
     })
     .catch(err => {
         next(err)
