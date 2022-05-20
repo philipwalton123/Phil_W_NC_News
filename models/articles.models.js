@@ -95,10 +95,7 @@ exports.readAllArticles = (query) => {
     //handles 'limit' query
     let L = 10
     if (query.limit) {
-        console.log(query.limit)
-        console.log(parseInt(query.limit), '<<<<< parseINt')
         if (parseInt(query.limit) < 1 || parseInt(query.limit) > 50) {
-            console.log('rejecting')
             return Promise.reject({status:400, msg: 'limit must be int 0 < _ > 50'})
         } else {
             L = query.limit
@@ -109,22 +106,20 @@ exports.readAllArticles = (query) => {
 
     //handles 'p' query
     if(query.p) {
-        console.log('p exists')
         if (parseInt(query.p) < 1 || parseInt(query.p) == NaN) {
-            console.log('rejecting')
             return Promise.reject({status:400, msg: 'p must be a positive int'})
         } else {
-            console.log('adding OFFSET to queryStr')
             const p = parseInt(query.p)
             queryStr += ` OFFSET ${((p - 1) * L)}`
         }
     }
 
-    console.log(queryStr)
-
-    return db.query(queryStr, topicArr)
-    .then(result => {
-        return result.rows
+    const selection = db.query(queryStr, topicArr)
+    const total = db.query('SELECT * FROM articles')
+        
+    return Promise.all([selection, total])
+    .then(([selection, total]) => {
+        return { articles: selection.rows, article_count: total.rows.length}
     })
 }
 

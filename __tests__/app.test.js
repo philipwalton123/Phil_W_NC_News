@@ -371,6 +371,13 @@ describe('GET /api/articles', () => {
             expect(response.body.articles).toEqual([])
         })
     });
+    it('200: response should include a key of article_count', () => {
+        return supertest(app).get('/api/articles')
+        .expect(200)
+        .then(response => {
+            expect(response.body.article_count).toBe(12)
+        })
+    });
 });
 
 describe('POST /api/articles/:article_id/comments', () => {
