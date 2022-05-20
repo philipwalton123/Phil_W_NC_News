@@ -183,11 +183,11 @@ describe.only('GET /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe('not a valid request')
         })
     });
-    it("200: should accept 'limit' query to display first n arictles only", () => {
-        return supertest(app).get('/api/articles?limit=5')
+    it("200: should accept 'limit' query to display first n comment only", () => {
+        return supertest(app).get('/api/articles/1/comments?limit=5')
         .expect(200)
         .then(response => {
-            expect(response.body.articles).toHaveLength(5)
+            expect(response.body.comments).toHaveLength(5)
         })
     });
     // it("200: should default 'limit' to 10 if not specified", () => {

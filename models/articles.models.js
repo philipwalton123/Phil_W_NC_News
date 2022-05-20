@@ -35,8 +35,20 @@ exports.incrementArticleVotes = (id, body) => {
 }
 
 
-exports.getTheseComments = (id) => {
-    const comments = db.query('SELECT * FROM comments WHERE article_id = $1', [id])
+exports.getTheseComments = (id, query) => {
+    let queryStr = 'SELECT * FROM comments WHERE article_id = $1'
+
+    let L = 10
+    if (query.limit) {
+        if (parseInt(query.limit) < 1 || parseInt(query.limit) > 50) {
+            return Promise.reject({status:400, msg: 'limit must be int 0 < _ > 50'})
+        } else {
+            L = query.limit
+        }
+    }
+    queryStr += ` LIMIT ${L}`
+    
+    const comments = db.query(queryStr, [id])
     
     const thisArticleExists = valueExists('articles', 'article_id', id)
 
