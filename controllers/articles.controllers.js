@@ -1,4 +1,4 @@
-const { getThisArticle, incrementArticleVotes, readAllArticles, getTheseComments, addThisComment, addThisArticle } = require("../models/articles.models")
+const { getThisArticle, incrementArticleVotes, readAllArticles, getTheseComments, addThisComment, addThisArticle, removeThisArticle } = require("../models/articles.models")
 
 exports.getArticle = (req, res, next) => {
     getThisArticle(req.params.article_id)
@@ -57,6 +57,16 @@ exports.postArticle = (req, res, next) => {
     addThisArticle(req.body)
     .then(article => {
         res.status(201).send({article})
+    })
+    .catch(err => {
+        next(err)
+    })
+}
+
+exports.deleteArticle = (req, res, next) => {
+    removeThisArticle(req.params.article_id)
+    .then(article => {
+        res.status(204).send()
     })
     .catch(err => {
         next(err)
