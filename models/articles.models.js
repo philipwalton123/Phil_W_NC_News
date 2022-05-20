@@ -4,7 +4,7 @@ const { convertTimestampToDate } = require('../db/helpers/utils')
 
 
 exports.getThisArticle = (id) => {
-    return db.query('SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST(COUNT (*) AS INT) AS comment_count FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE comments.article_id = $1 GROUP BY articles.article_id', [id])
+    return db.query('SELECT articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles. created_at, articles.votes, CAST(COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id', [id])
     .then(result => {
         if(result.rows.length === 0){
             return Promise.reject({status: 404, msg: `no such article with id ${id}`})
@@ -51,7 +51,7 @@ exports.getTheseComments = (id) => {
 } 
 
 exports.readAllArticles = (query) => {
-    let queryStr = "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (*) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id"
+    let queryStr = "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id"
 
     //handles 'topic' filter query first
     const topicArr = []
@@ -111,6 +111,24 @@ exports.addThisComment = (id, body) => {
         const queryStr = 'INSERT INTO comments (body, votes, author, article_id, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *'
         return db.query(queryStr, [body.body, 0, body.username, id, date])
         .then(result => {
+            return result.rows[0]
+        })
+    }
+}
+
+exports.addThisArticle = (body) => {
+    if(Object.keys(body).length === 0 || !body.hasOwnProperty('body') || !body.hasOwnProperty('author') || !body.hasOwnProperty('title') || !body.hasOwnProperty('topic')) {
+        return Promise.reject({status: 400, msg: "malformed post"})
+        
+    } else if (typeof body.body != 'string' || typeof body.author != 'string' || typeof body.title != 'string' || typeof body.topic != 'string') {
+        return Promise.reject({status: 400, msg: "invalid value type"})
+        
+    } else {
+        const date = new Date(Date.now())
+        const queryStr = 'INSERT INTO articles (title, topic, author, body, created_at, votes) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'
+        return db.query(queryStr, [body.title, body.topic, body.author, body.body, date, 0])
+        .then(result => {
+            result.rows[0].comment_count = 0
             return result.rows[0]
         })
     }
