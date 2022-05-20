@@ -64,7 +64,7 @@ exports.readAllArticles = (query) => {
     queryStr += ' GROUP BY articles.article_id'
 
     //handles sort_by query
-    const greenList = ['title', 'created_at', 'author', 'topic', 'votes', 'body', 'comment_count']
+    const greenList = ['article_id', 'title', 'created_at', 'author', 'topic', 'votes', 'body', 'comment_count']
 
     if(query.sort_by) {
         if (!greenList.includes(query.sort_by)) {
@@ -92,9 +92,34 @@ exports.readAllArticles = (query) => {
         queryStr += ' DESC'
     }
 
-    return db.query(queryStr, topicArr)
-    .then(result => {
-        return result.rows
+    //handles 'limit' query
+    let L = 10
+    if (query.limit) {
+        if (parseInt(query.limit) < 1 || parseInt(query.limit) > 50) {
+            return Promise.reject({status:400, msg: 'limit must be int 0 < _ > 50'})
+        } else {
+            L = query.limit
+        }
+    }
+    queryStr += ` LIMIT ${L}`
+    
+
+    //handles 'p' query
+    if(query.p) {
+        if (parseInt(query.p) < 1 || parseInt(query.p) == NaN) {
+            return Promise.reject({status:400, msg: 'p must be a positive int'})
+        } else {
+            const p = parseInt(query.p)
+            queryStr += ` OFFSET ${((p - 1) * L)}`
+        }
+    }
+
+    const selection = db.query(queryStr, topicArr)
+    const total = db.query('SELECT * FROM articles')
+        
+    return Promise.all([selection, total])
+    .then(([selection, total]) => {
+        return { articles: selection.rows, article_count: total.rows.length}
     })
 }
 

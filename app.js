@@ -29,6 +29,8 @@ app.use((err, req, res, next) => {
         } else {
             res.status(404).send({msg: `not found: invalid article id`})
         }
+    } else if (err.code === '42703') {
+        res.status(400).send({msg: `not a valid query`})
     } else {
         next(err)
     }
@@ -45,6 +47,7 @@ app.use((err, req, res, next) => {
 
 //Back-stop error msg
 app.use((err, req, res, next) => {
+    console.log(err)
     res.status(500).send({msg: 'internal server error'})
 })
 
