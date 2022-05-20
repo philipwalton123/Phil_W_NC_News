@@ -183,3 +183,17 @@ exports.addThisArticle = (body) => {
         })
     }
 }
+
+exports.removeThisArticle = (id) => {
+    console.log(id)
+    return db.query('DELETE FROM articles WHERE article_id = $1 RETURNING *', [id])
+    .then(result => {
+        console.log(result.rows)
+        if(result.rows.length) {
+            return result.rows[0]
+        } else {
+            return Promise.reject({status:404, msg: 'article not found'})
+        }
+        
+    })
+}
