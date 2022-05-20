@@ -491,20 +491,37 @@ describe('PATCH /api/comments/:comment_id', () => {
     });
 });
 
-describe.only('POST /api/articles', () => {
+describe('POST /api/articles', () => {
     it('200: should add the article and return it to client', () => {
-        const testArticle= { author: 'rogersop', body: 'This is MY story.', topic: 'life', title: 'The Real Me'}
+        const testArticle= { author: 'rogersop', body: 'This is MY story.', topic: 'cats', title: 'The Real Me'}
         return supertest(app).post('/api/articles').send(testArticle)
         .expect(201)
         .then(response => {
-            expect(response.body.comment).toEqual({
+            expect(response.body.article).toEqual({
                 article_id: 13,
                 author: 'rogersop',
+                title: 'The Real Me',
                 body: 'This is MY story.',
-                topic: 'life',
+                topic: 'cats',
                 created_at: expect.any(String),
                 votes: 0,
-                comments: 0
+                comment_count: 0
+            })
+        })
+        .then(() => {
+            return supertest(app).get('/api/articles/13')
+            .expect(200)
+            .then(response => {
+                expect(response.body.article).toEqual({
+                    article_id: 13,
+                    author: 'rogersop',
+                    title: 'The Real Me',
+                    body: 'This is MY story.',
+                    topic: 'cats',
+                    created_at: expect.any(String),
+                    votes: 0,
+                    comment_count: 0
+                })
             })
         })
     });
