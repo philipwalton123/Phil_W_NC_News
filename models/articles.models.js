@@ -78,10 +78,13 @@ exports.getTheseComments = (id, query) => {
 exports.readAllArticles = (query) => {
     let queryStr = "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles. created_at, articles.votes, CAST (COUNT (comments.article_id) AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id"
 
+    let queryStr2 = 'SELECT * FROM articles'
+
     //handles 'topic' filter query first
     const topicArr = []
     if (query.topic) {
         queryStr += ' WHERE articles.topic = $1'
+        queryStr2 += ' WHERE articles.topic = $1'
         topicArr.push(query.topic)
     }
 
@@ -140,7 +143,8 @@ exports.readAllArticles = (query) => {
     }
 
     const selection = db.query(queryStr, topicArr)
-    const total = db.query('SELECT * FROM articles')
+    queryStr2, topicArr
+    const total = db.query(queryStr2, topicArr)
         
     return Promise.all([selection, total])
     .then(([selection, total]) => {

@@ -795,7 +795,7 @@ describe('POST /api/topics', () => {
 });
 
 describe('DELETE /api/articles/:article_id', () => {
-    it('204: should respond with no content if article and its comments were successfully deleted', () => {
+    it('204: should respond with no content if article and its comments werec successfully deleted', () => {
         return supertest(app).delete('/api/articles/1')
         .expect(204)
         .then(()=> {
