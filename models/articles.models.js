@@ -185,10 +185,8 @@ exports.addThisArticle = (body) => {
 }
 
 exports.removeThisArticle = (id) => {
-    console.log(id)
-    return db.query('DELETE FROM articles WHERE article_id = $1 RETURNING *', [id])
+    return db.query('WITH ArtDels AS (DELETE FROM articles where article_id = $1 RETURNING article_id) DELETE FROM comments WHERE article_id IN (SELECT article_id FROM ArtDels) RETURNING *', [id])
     .then(result => {
-        console.log(result.rows)
         if(result.rows.length) {
             return result.rows[0]
         } else {

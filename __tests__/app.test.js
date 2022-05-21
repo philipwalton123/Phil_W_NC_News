@@ -794,31 +794,31 @@ describe('POST /api/topics', () => {
     });
 });
 
-describe.only('DELETE /api/articles/:article_id', () => {
-    it('204: should respond with no content if row was successfully deleted', () => {
-        return supertest(app).delete('/api/articles/12')
+describe('DELETE /api/articles/:article_id', () => {
+    it('204: should respond with no content if article and its comments were successfully deleted', () => {
+        return supertest(app).delete('/api/articles/1')
         .expect(204)
         .then(()=> {
             return supertest(app).get('/api/articles')
         })
         .then(response => {
             response.body.articles.forEach(article => {
-                expect(article.article_id).not.toBe(12)
+                expect(article.article_id).not.toBe(1)
             })
         })
     });
-    // it('404: should respond with a msg if comment_id not found', () => {
-    //     return supertest(app).delete('/api/comments/25')
-    //     .expect(404)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe('comment not found')
-    //     })
-    // });
-    // it('400: should respond with a msg if comment_id is not a number', () => {
-    //     return supertest(app).delete('/api/comments/first')
-    //     .expect(400)
-    //     .then(response => {
-    //         expect(response.body.msg).toBe(`not a valid request`)
-    //     })
-    // });
+    it('404: should respond with a msg if article_id not found', () => {
+        return supertest(app).delete('/api/articles/25')
+        .expect(404)
+        .then(response => {
+            expect(response.body.msg).toBe('article not found')
+        })
+    });
+    it('400: should respond with a msg if article_id is not a number', () => {
+        return supertest(app).delete('/api/articles/three')
+        .expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe(`not a valid request`)
+        })
+    });
 });
