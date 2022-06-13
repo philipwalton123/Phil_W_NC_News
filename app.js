@@ -5,7 +5,10 @@ const { getTopics } = require('./controllers/topics.controllers')
 const { updateArticleVotes, getArticle, getArticles, getCommentsByArticleId, postComment } = require('./controllers/articles.controllers')
 const { deleteComment } = require('./controllers/comments.controllers')
 const { getEndpoints } = require('./controllers/endpoints.controller.js')
+const cors = require('cors')
+
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 //Use the router
