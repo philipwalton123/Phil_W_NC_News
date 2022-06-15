@@ -36,6 +36,13 @@ const createTables = async () => {
     votes INT DEFAULT 0 NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
   );`);
+
+  await db.query(`
+  CREATE TABLE votes (
+    article_id INT REFERENCES articles(article_id) NOT NULL,
+    author VARCHAR REFERENCES users(username) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  );`);
 };
 
 const dropTables = async () => {
