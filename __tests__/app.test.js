@@ -837,22 +837,21 @@ describe.only('GET /api/votes', () => {
 
 describe.only('POST /api/votes', () => {
     it('201: should return the new vote', () => {
-        return supertest(app).post('/api/votes').send({article: 299, voter: 'Maureen'})
+        return supertest(app).post('/api/votes').send({article: 300, voter: 'Charlie'})
         .expect(201)
         .then(response => {
-            expect(response.body.vote.article).toBe(299)
-            expect(response.body.vote.voter).toBe('Maureen')
+            expect(response.body.vote.article).toBe(300)
+            expect(response.body.vote.voter).toBe('Charlie')
         })
     });
 });
 
-describe.only('POST /api/votes', () => {
+describe.only('DELETE /api/votes', () => {
     it('204: should remove the vote and return the removed vote', () => {
         return supertest(app).delete('/api/votes').send({article: 299, voter: 'Maureen'})
-        .expect(204)
+        .expect(200)
         .then(response => {
-            console.log(Object.keys(response))
-            console.log(response.res)
+            console.log(response.body)
             expect(response.body.vote.article).toBe(299)
             expect(response.body.vote.voter).toBe('Maureen')
         })

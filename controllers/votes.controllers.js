@@ -22,9 +22,9 @@ exports.postVote = (req, res, next) => {
 
 exports.deleteVote = (req, res, next) => {
     removeThisVote(req.body)
-    .then((vote)=> {
+    .then(vote => {
         console.log(vote, '<<<responding with')
-        res.status(204).send({vote})
+        res.status(200).send({vote})
     })
     .catch(err => {
         next(err)

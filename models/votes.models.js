@@ -33,7 +33,7 @@ exports.removeThisVote = (body) => {
     } else {
         return db.query('DELETE FROM votes WHERE article = $1 AND voter = $2 RETURNING *', [body.article, body.voter])
         .then(result => {
-            console.log(result.rows, '<<<<controller')
+            console.log(result.rows, '<<<<controller has deleted')
             return result.rows[0]
         })
     }
