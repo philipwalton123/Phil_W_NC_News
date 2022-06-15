@@ -38,9 +38,9 @@ const createTables = async () => {
   );`);
 
   await db.query(`
-  CREATE TABLE votes (
-    article INT NOT NULL,
-    voter VARCHAR NOT NULL,
+  CREATE TABLE voting (
+    article INT,
+    voter VARCHAR,
     created_at TIMESTAMP DEFAULT NOW()
   );`);
 };
