@@ -828,9 +828,33 @@ describe.only('GET /api/votes', () => {
         return supertest(app).get('/api/votes')
         .expect(200)
         .then(response => {
-            console.log(response.body, '<<< response in test')
             expect(Array.isArray(response.body.votes)).toBe(true)
-            expect(response.body.topics).toHaveLength(1)
+            expect(response.body.votes).toHaveLength(2)
+            expect(response.body.votes[0].article).toBe(159)
+        })
+    });
+});
+
+describe.only('POST /api/votes', () => {
+    it('201: should return the new vote', () => {
+        return supertest(app).post('/api/votes').send({article: 299, voter: 'Maureen'})
+        .expect(201)
+        .then(response => {
+            expect(response.body.vote.article).toBe(299)
+            expect(response.body.vote.voter).toBe('Maureen')
+        })
+    });
+});
+
+describe.only('POST /api/votes', () => {
+    it('204: should remove the vote and return the removed vote', () => {
+        return supertest(app).delete('/api/votes').send({article: 299, voter: 'Maureen'})
+        .expect(204)
+        .then(response => {
+            console.log(Object.keys(response))
+            console.log(response.res)
+            expect(response.body.vote.article).toBe(299)
+            expect(response.body.vote.voter).toBe('Maureen')
         })
     });
 });

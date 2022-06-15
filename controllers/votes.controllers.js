@@ -3,7 +3,7 @@ const { readAllVotes, addThisVote, removeThisVote } = require("../models/votes.m
 exports.getVotes = (req, res, next) => {
     readAllVotes(req.query)
     .then(votes => {
-        res.status(200).send(votes)
+        res.status(200).send({votes})
     })
     .catch(err => {
         next(err)
@@ -21,10 +21,10 @@ exports.postVote = (req, res, next) => {
 }
 
 exports.deleteVote = (req, res, next) => {
-    console.log('in controller')
     removeThisVote(req.body)
     .then((vote)=> {
-        res.status(204).send()
+        console.log(vote, '<<<responding with')
+        res.status(204).send({vote})
     })
     .catch(err => {
         next(err)

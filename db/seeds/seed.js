@@ -11,6 +11,8 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   await dropTables();
   await createTables();
 
+  const votesPromise = db.query("INSERT INTO votes (article, voter) VALUES (159, 'philW'), (299, 'Maureen') RETURNING *").then((result) => result.rows)
+
   const insertTopicsQueryStr = format(
     "INSERT INTO topics (slug, description) VALUES %L RETURNING *;",
     topicData.map(({ slug, description }) => [slug, description])
@@ -31,7 +33,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     .query(insertUsersQueryStr)
     .then((result) => result.rows);
 
-  await Promise.all([topicsPromise, usersPromise]);
+  await Promise.all([topicsPromise, usersPromise, votesPromise]);
 
   const formattedArticleData = articleData.map(convertTimestampToDate);
   const insertArticlesQueryStr = format(
@@ -68,6 +70,8 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     )
   );
   return db.query(insertCommentsQueryStr).then((result) => result.rows);
+
+  
 };
 
 module.exports = seed;
