@@ -38,7 +38,7 @@ const createTables = async () => {
   );`);
 
   await db.query(`
-  CREATE TABLE voting (
+  CREATE TABLE votes (
     article INT,
     voter VARCHAR,
     created_at TIMESTAMP DEFAULT NOW()
@@ -46,10 +46,12 @@ const createTables = async () => {
 };
 
 const dropTables = async () => {
+  await db.query(`DROP TABLE IF EXISTS votes;`)
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
   await db.query(`DROP TABLE IF EXISTS topics;`);
+  
 };
 
 module.exports = { createTables, dropTables };
