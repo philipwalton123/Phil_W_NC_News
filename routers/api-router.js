@@ -16,6 +16,6 @@ apiRouter.use('/api/users', usersRouter)
 
 apiRouter.use('/api/comments', commentsRouter)
 
-apiRouter.use('/votes', votesRouter)
+apiRouter.use('/api/votes', votesRouter)
 
 module.exports = apiRouter

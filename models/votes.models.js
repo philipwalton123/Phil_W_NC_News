@@ -1,6 +1,10 @@
+const db = require('../db/connection')
+
 exports.readAllVotes = () => {
+    console.log('in model')
     return db.query('SELECT * FROM votes')
     .then(result => {
+        console.log(result, '<<<<result in model')
         return result.rows
     })
 }

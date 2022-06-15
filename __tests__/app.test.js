@@ -822,3 +822,15 @@ describe('DELETE /api/articles/:article_id', () => {
         })
     });
 });
+
+describe.only('GET /api/votes', () => {
+    it('200: should return an array of all votes', () => {
+        return supertest(app).get('/api/votes')
+        .expect(200)
+        .then(response => {
+            console.log(response.body, '<<< response in test')
+            expect(Array.isArray(response.body.votes)).toBe(true)
+            expect(response.body.topics).toHaveLength(1)
+        })
+    });
+});

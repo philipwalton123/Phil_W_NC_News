@@ -21,6 +21,7 @@ exports.postVote = (req, res, next) => {
 }
 
 exports.deleteVote = (req, res, next) => {
+    console.log('in controller')
     removeThisVote(req.body)
     .then((vote)=> {
         res.status(204).send()
